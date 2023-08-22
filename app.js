@@ -17,7 +17,7 @@ app.use(function (req, res, next) {
 
 // database stuff
 
-const uri = "mongodb://localhost:27017/crud01";
+const uri = "mongodb://127.0.0.1:27017/crud01";
 mongoose
   .connect(uri, {
     useNewUrlParser: true,
@@ -37,6 +37,8 @@ app.get("/api/", (req, res) => {
 
 const TodosRoute = require("./routes/Todos.js");
 app.use("/api/todos", TodosRoute);
+app.use("/api/employee", require("./routes/Employee.js"));
+app.use("/api/leaves", require("./routes/Leaves.js"));
 
 app.listen(8000, () => {
   console.log("server started");

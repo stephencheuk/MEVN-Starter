@@ -1,0 +1,9 @@
+// app global css in SCSS form
+
+.q-field {
+  &--dense {
+    .q-field__control, .q-field__marginal {
+      height: 2rem
+    }
+  }
+}
