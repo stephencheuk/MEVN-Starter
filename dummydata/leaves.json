@@ -1,0 +1,45 @@
+[{
+  "_id": {
+    "$oid": "64e4768b2655adbf38fb6c38"
+  },
+  "type": "sick leave",
+  "staff_id": {
+    "$oid": "64e434c82655adbf38fb6c19"
+  },
+  "reason": "Personal Reason",
+  "approval": true,
+  "approver": [],
+  "cert": true,
+  "cert_no": "3124512",
+  "cert_issuer": "康健醫務中心",
+  "end_date": {
+    "$date": "2023-08-21T16:00:00Z"
+  },
+  "start_date": {
+    "$date": "2023-08-20T16:00:00Z"
+  },
+  "duration": 1
+},{
+  "_id": {
+    "$oid": "64e47b002655adbf38fb6c39"
+  },
+  "type": "no pay leave",
+  "staff_id": {
+    "$oid": "64e434c82655adbf38fb6c19"
+  },
+  "reason": "Personal Reason",
+  "cert": false,
+  "cert_no": "",
+  "cert_issuer": "",
+  "approval": true,
+  "approver": [
+    "Anson"
+  ],
+  "end_date": {
+    "$date": "2023-08-20T00:00:00Z"
+  },
+  "start_date": {
+    "$date": "2023-08-20T00:00:00Z"
+  },
+  "duration": 1
+}]
