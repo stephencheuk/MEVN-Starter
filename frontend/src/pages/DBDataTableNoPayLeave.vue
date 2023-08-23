@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <q-table flat bordered ref="tableRef" title="Treats" :rows="rows" :columns="columns" row-key="id"
+    <q-table flat bordered ref="tableRef" title="No Pay Leaves" :rows="rows" :columns="columns" row-key="id"
       :rows-per-page-options="[0, 20, 50, 100]" v-model:pagination="pagination" :loading="loading" :filter="filter"
       binary-state-sort @request="onRequest" @row-click="(e, r)=>console.log(this.$router.push(`${this.$route.path}/edit/${r._id}`))">
       <template v-slot:top-right>
@@ -18,24 +18,42 @@
 <script>
 import { ref, onMounted } from 'vue'
 
+const DateOpt = {
+  timeZone: 'Asia/Hong_Kong',
+  // weekday: 'numeric',
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit"
+}
+
 const columns = [
   {
-    name: 'name',
+    name: 'start_date',
     required: true,
-    label: 'Name',
+    label: 'Start Date',
     align: 'left',
-    field: 'name',
+    field: 'start_date',
+    // field: row => row.name,
+    format: val => (new Date(val)).toLocaleDateString('en-HK', DateOpt),
+    sortable: true
+  },
+  {
+    name: 'end_date',
+    required: true,
+    label: 'End Date',
+    align: 'left',
+    field: 'end_date',
     // field: row => row.name,
     // format: val => `${val}`,
     sortable: true
   },
   {
-    name: 'salary',
+    name: 'duration',
     align: 'right',
-    label: 'Salary',
-    field: 'salary',
+    label: 'Duration',
+    field: 'duration',
     sortable: true,
-    format: val => val.toLocaleString('en-hk', { style: 'currency', currency: 'HKD', minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    // format: val => val.toLocaleString('en-hk', { style: 'currency', currency: 'HKD', minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
 ]
 
@@ -57,46 +75,12 @@ export default {
     // SELECT * FROM ... WHERE...LIMIT...
     const fetchFromServer = async (startRow, count, filter, sortBy, descending) => {
       console.log(startRow, count, filter, sortBy, descending)
-      const result = await fetch(`http://localhost:8000/api/leaves?search=${filter}&order=${descending}&sortBy=${sortBy}&from=${startRow}&limit=${count}`)
+      const result = await fetch(`/api/leaves?search=${filter}&order=${descending}&sortBy=${sortBy}&from=${startRow}&limit=${count}`)
         .then(response => response.json())
       // .then(json => console.log(json))
       console.log(result)
       return result
-
-      // const data = filter
-      //   ? originalRows.filter(row => row.name.includes(filter))
-      //   : originalRows.slice()
-
-      // // handle sortBy
-      // if (sortBy) {
-      //   const sortFn = sortBy === 'desc'
-      //     ? (descending
-      //         ? (a, b) => (a.name > b.name ? -1 : a.name < b.name ? 1 : 0)
-      //         : (a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0)
-      //       )
-      //     : (descending
-      //         ? (a, b) => (parseFloat(b[sortBy]) - parseFloat(a[sortBy]))
-      //         : (a, b) => (parseFloat(a[sortBy]) - parseFloat(b[sortBy]))
-      //       )
-      //   data.sort(sortFn)
-      // }
-
-      // return data.slice(startRow, startRow + count)
     }
-
-    // emulate 'SELECT count(*) FROM ...WHERE...'
-    // function getRowsNumberCount(filter) {
-    //   if (!filter) {
-    //     return originalRows.length
-    //   }
-    //   let count = 0
-    //   originalRows.forEach(treat => {
-    //     if (treat.name.includes(filter)) {
-    //       ++count
-    //     }
-    //   })
-    //   return count
-    // }
 
     const onRequest = (props) => {
       const { page, rowsPerPage, sortBy, descending } = props.pagination

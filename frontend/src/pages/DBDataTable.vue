@@ -1,6 +1,6 @@
 <template>
-  <div class="q-pa-md">
-    <q-table flat bordered ref="tableRef" title="Treats" :rows="rows" :columns="columns" row-key="id"
+  <div class="q-pa-md col-grow column">
+    <q-table class="col-grow my-sticky-header-table" flat bordered ref="tableRef" title="DB Data Table (Employee)" :rows="rows" :columns="columns" row-key="id"
       :rows-per-page-options="[0, 20, 50, 100]" v-model:pagination="pagination" :loading="loading" :filter="filter"
       binary-state-sort @request="onRequest" @row-click="(e, r)=>console.log(this.$router.push(`${this.$route.path}/edit/${r._id}`))">
       <template v-slot:top-right>
@@ -14,6 +14,40 @@
     </q-table>
   </div>
 </template>
+
+<style>
+.my-sticky-header-table {
+  /* height or max-height is important */
+  height: 100%;
+}
+.my-sticky-header-table .q-table__top,
+.my-sticky-header-table .q-table__bottom,
+.my-sticky-header-table thead tr:first-child th {
+  /* bg color is important for th; just specify one */
+  background-color: #00b4ff
+}
+
+.my-sticky-header-table thead tr th {
+  position: sticky;
+  z-index: 1;
+}
+
+.my-sticky-header-table thead tr:first-child th {
+  top: 0
+}
+
+  /* this is when the loading indicator appears */
+.my-sticky-header-table.q-table--loading thead tr:last-child th {
+  /* height of all previous header rows */
+  top: 48px;
+}
+  /* prevent scrolling behind sticky top row on focus */
+.my-sticky-header-table tbody {
+  /* height of all previous header rows */
+  scroll-margin-top: 48px
+}
+
+</style>
 
 <script>
 import { ref, onMounted } from 'vue'
@@ -106,7 +140,7 @@ export default {
     // SELECT * FROM ... WHERE...LIMIT...
     const fetchFromServer = async (startRow, count, filter, sortBy, descending) => {
       console.log(startRow, count, filter, sortBy, descending)
-      const result = await fetch(`http://localhost:8000/api/employee?search=${filter}&order=${descending}&sortBy=${sortBy}&from=${startRow}&limit=${count}`)
+      const result = await fetch(`/api/employee?search=${filter}&order=${descending}&sortBy=${sortBy}&from=${startRow}&limit=${count}`)
         .then(response => response.json())
       // .then(json => console.log(json))
       console.log(result)

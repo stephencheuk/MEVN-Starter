@@ -27,7 +27,6 @@
           </q-tab-panel>
 
           <q-tab-panel name="nopay">
-            <div class="text-h6">No Pay Leave</div>
             <NoPayLeaveList />
           </q-tab-panel>
 
