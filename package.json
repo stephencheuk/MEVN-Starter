@@ -9,7 +9,6 @@
     "start:server": "nodemon app.js",
     "start:client": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run start:server\" \"npm run start:client\""
-
   },
   "keywords": [],
   "author": "",
@@ -17,11 +16,15 @@
   "dependencies": {
     "body-parse": "^0.1.0",
     "cors": "^2.8.5",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
-    "mongoose": "^7.4.1"
+    "mongoose": "^7.4.1",
+    "os": "^0.1.2",
+    "puppeteer": "^21.1.0",
+    "puppeteer-report": "^3.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1",
-    "concurrently": "^8.2.0"
+    "concurrently": "^8.2.0",
+    "nodemon": "^3.0.1"
   }
 }

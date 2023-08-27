@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Leaves = require("../models/Leaves");
+const PDF = require("../components/PDF.js");
 
 router.get("/", async (req, res) => {
   // fetch(`http://localhost:8000/api/leaves?search=${filter}&order=${descending}&sortBy=${sortBy}&from=${startRow}&limit=${count}`)
@@ -30,7 +31,7 @@ router.get("/", async (req, res) => {
   const total = Leaves.count(Search_FIND);
   const result = await Promise.all([records, total]);
 
-  console.log(result);
+  // console.log(result);
 
   res.json({
     data: result[0],
@@ -38,6 +39,27 @@ router.get("/", async (req, res) => {
   });
 });
 
+router.get("/payslip", async (req, res) => {
+  const pdf = new PDF(req, res);
+
+  await pdf.writer("PaySlip");
+
+  // if (!()) {
+  //   res.json({
+  //     done: false,
+  //   });
+  // }
+});
+
+router.get("/pdf", async (req, res) => {
+  const pdf = new PDF(req, res);
+
+  if (!(await pdf.writer())) {
+    res.json({
+      done: false,
+    });
+  }
+});
 // create a new todo
 router.post("/new", async (req, res) => {
   const newLeaves = new Todo(
