@@ -65,7 +65,7 @@ class PDF {
     let pdfPath = path.join(appDir, ".cache", "page.pdf");
 
     const fs = require("fs");
-    fs.unlinkSync(pdfPath);
+    if (fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath);
 
     try {
       await report.pdf(browser, pagePath, {
