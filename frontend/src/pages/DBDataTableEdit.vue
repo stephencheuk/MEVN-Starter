@@ -27,12 +27,16 @@
           </q-tab-panel>
 
           <q-tab-panel name="nopay">
-            <NoPayLeaveList />
+            <NoPayLeaveList
+              @onEvent="UpdateEvent"
+            />
+            <QCalander2 :calanderEvents="events" />
           </q-tab-panel>
 
           <q-tab-panel name="annlv">
             <div class="text-h6">Movies</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            <NoPayLeaveList />
+            <QCalander />
           </q-tab-panel>
 
           <q-tab-panel name="sicklv">
@@ -48,15 +52,27 @@
 <script>
 import { ref } from 'vue'
 import NoPayLeaveList from './DBDataTableNoPayLeave.vue'
+import QCalander from './DBDataTableNoPayLeaveCalander.vue'
+import QCalander2 from './DBDataTableNoPayLeaveCalander2.vue'
 
 export default {
   components: {
-    NoPayLeaveList
+    NoPayLeaveList,
+    QCalander,
+    QCalander2,
+  },
+  methods: {
+    UpdateEvent (events) {
+      console.log('onEvent', events);
+      this.events = events;
+    }
   },
   setup () {
-    return {
+    const events = ref([])
 
-      tab: ref('mails')
+    return {
+      events,
+      tab: ref('nopay')
     }
   }
 }

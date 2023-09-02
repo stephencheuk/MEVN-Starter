@@ -1,22 +1,21 @@
 <template>
   <div class="q-pa-md">
-    <q-table flat bordered ref="tableRef" title="No Pay Leaves" :rows="rows" :columns="columns" row-key="id"
-      :rows-per-page-options="[0, 20, 50, 100]" v-model:pagination="pagination" :loading="loading" :filter="filter"
-      binary-state-sort @request="onRequest" @row-click="(e, r)=>console.log(this.$router.push(`${this.$route.path}/edit/${r._id}`))">
-      <template v-slot:top-right>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </template>
-
-    </q-table>
+    <daykeep-calendar-month
+      :start-date="Date('2018-02-01')"
+      :event-array="someEventObject"
+      :sunday-first-day-of-week="true"
+      calendar-locale="fr"
+      calendar-timezone="Europe/Paris"
+      :allow-editing="false"
+      :render-html="true"
+    />
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
+import { DaykeepCalendar } from '@daykeep/calendar-quasar'
+
 
 const DateOpt = {
   timeZone: 'Asia/Hong_Kong',
@@ -28,46 +27,56 @@ const DateOpt = {
 
 const columns = [
   {
-    name: 'start_date',
-    required: true,
-    label: 'Start Date',
-    align: 'left',
-    field: 'start_date',
-    // field: row => row.name,
-    format: val => (new Date(val)).toLocaleDateString('en-HK', DateOpt),
-    sortable: true
+    id: 1,
+    summary: 'Test event',
+    description: 'Some extra info goes here',
+    location: 'Office of the Divine Randomness, 1232 Main St., Denver, CO',
+    start: {
+      dateTime: '2018-02-16T14:00:00', // ISO 8601 formatted
+      timeZone: 'America/New_York' // Timezone listed as a separate IANA code
+    },
+    end: {
+      dateTime: '2018-02-16T16:30:00',
+      timeZone: 'American/New_York'
+    },
+    color: 'positive',
+    attendees: [
+      {
+        id: 5,
+        email: 'somebody@somewhere.com',
+        displayName: 'John Q. Public',
+        organizer: false,
+        self: false,
+        resource: false
+      }
+    ]
   },
   {
-    name: 'end_date',
-    required: true,
-    label: 'End Date',
-    align: 'left',
-    field: 'end_date',
-    // field: row => row.name,
-    // format: val => `${val}`,
-    sortable: true
+    id: 2,
+    summary: 'Test all-day event',
+    description: 'Some extra info goes here',
+    start: {
+      date: '2018-02-16' // A date variable indicates an all-day event
+    },
+    end: {
+      date: '2018-02-19'
+    }
   },
-  {
-    name: 'duration',
-    align: 'right',
-    label: 'Duration',
-    field: 'duration',
-    sortable: true,
-    // format: val => val.toLocaleString('en-hk', { style: 'currency', currency: 'HKD', minimumFractionDigits: 2, maximumFractionDigits: 2 })
-  }
+    {
+      id: 3,
+      summary: 'Some other test event',
+      description: 'Some extra info goes here',
+      start: {
+        dateTime: '2018-02-17T10:00:00+0500', // timezone embedded in dateTime
+      },
+      end: {
+        dateTime: '2018-02-17T12:30:00+0500',
+      },
+    },
 ]
 
 export default {
-  // components: {
-  // },
-  // props: ['events'],
-  // emits: ['onEvent'],
-  // methods: {
-  //   onEmit(result) {
-  //     this.$emit("onEvent", result);
-  //   }
-  // },
-  setup (props, context) {
+  setup () {
     const tableRef = ref()
     const rows = ref([])
     const filter = ref('')
@@ -80,9 +89,6 @@ export default {
       rowsNumber: 10
     })
 
-    console.log('props', props.emit)
-    console.log('context', context.emit)
-
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
     const fetchFromServer = async (startRow, count, filter, sortBy, descending) => {
@@ -90,11 +96,7 @@ export default {
       const result = await fetch(`/api/leaves?search=${filter}&order=${descending}&sortBy=${sortBy}&from=${startRow}&limit=${count}`)
         .then(response => response.json())
       // .then(json => console.log(json))
-      // console.log(result)
-      try {
-        console.log('data from server', context.emit('onEvent', result.data))
-      } catch (e) { console.log(e) }
-      // props.events = result.data;
+      console.log(result)
       return result
     }
 

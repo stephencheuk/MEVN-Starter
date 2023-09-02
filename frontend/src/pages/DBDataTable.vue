@@ -1,8 +1,23 @@
 <template>
   <div class="q-pa-md col-grow column">
-    <q-table class="col-grow my-sticky-header-table" flat bordered ref="tableRef" title="DB Data Table (Employee)" :rows="rows" :columns="columns" row-key="id"
-      :rows-per-page-options="[0, 20, 50, 100]" v-model:pagination="pagination" :loading="loading" :filter="filter"
-      binary-state-sort @request="onRequest" @row-click="(e, r)=>console.log(this.$router.push(`${this.$route.path}/edit/${r._id}`))">
+    <q-table
+      class="sticky-header"
+      flat
+      bordered
+      dense
+      ref="tableRef"
+      title="DB Data Table (Employee)"
+      :rows="rows"
+      :columns="columns"
+      row-key="index"
+      :rows-per-page-options="[0, 10, 20, 50, 100]"
+      v-model:pagination="pagination"
+      :loading="loading"
+      :filter="filter"
+      binary-state-sort
+      @request="onRequest"
+      @row-click="(e, r)=>console.log(this.$router.push(`${this.$route.path}/edit/${r._id}`))
+      ">
       <template v-slot:top-right>
         <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
           <template v-slot:append>
@@ -15,37 +30,34 @@
   </div>
 </template>
 
-<style>
-.my-sticky-header-table {
+<style lang="sass">
+.sticky-header
   /* height or max-height is important */
-  height: 100%;
-}
-.my-sticky-header-table .q-table__top,
-.my-sticky-header-table .q-table__bottom,
-.my-sticky-header-table thead tr:first-child th {
-  /* bg color is important for th; just specify one */
-  background-color: #00b4ff
-}
+  max-height: 100vh
+  flex: 1 0 0px
 
-.my-sticky-header-table thead tr th {
-  position: sticky;
-  z-index: 1;
-}
+  .q-table__middle
+    flex: 1 0 0px
 
-.my-sticky-header-table thead tr:first-child th {
-  top: 0
-}
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    background-color: #fff
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  tbody tr:nth-child(even)
+    background-color: #f0f0f0
 
   /* this is when the loading indicator appears */
-.my-sticky-header-table.q-table--loading thead tr:last-child th {
-  /* height of all previous header rows */
-  top: 48px;
-}
-  /* prevent scrolling behind sticky top row on focus */
-.my-sticky-header-table tbody {
-  /* height of all previous header rows */
-  scroll-margin-top: 48px
-}
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
 
 </style>
 
@@ -54,6 +66,13 @@ import { ref, onMounted } from 'vue'
 
 const columns = [
   {
+    name: 'index',
+    label: '#',
+    field: 'index',
+    headerStyle: "width: 10%; text-align: center",
+    style: "text-align: center"
+  },
+  {
     name: 'name',
     required: true,
     label: 'Name',
@@ -61,7 +80,8 @@ const columns = [
     field: 'name',
     // field: row => row.name,
     // format: val => `${val}`,
-    sortable: true
+    sortable: true,
+    headerStyle: "width: 60%",
   },
   {
     name: 'salary',
@@ -69,7 +89,8 @@ const columns = [
     label: 'Salary',
     field: 'salary',
     sortable: true,
-    format: val => val.toLocaleString('en-hk', { style: 'currency', currency: 'HKD', minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    format: val => val.toLocaleString('en-hk', { style: 'currency', currency: 'HKD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace("$", "$ "),
+    headerStyle: "width: 30%",
   }
   // { name: 'fat', label: 'Fat (g)', field: 'fat', sortable: true },
   // { name: 'carbs', label: 'Carbs (g)', field: 'carbs', sortable: true },
@@ -132,7 +153,7 @@ export default {
       sortBy: 'desc',
       descending: false,
       page: 1,
-      rowsPerPage: 5,
+      rowsPerPage: 10,
       rowsNumber: 10
     })
 
@@ -143,7 +164,9 @@ export default {
       const result = await fetch(`/api/employee?search=${filter}&order=${descending}&sortBy=${sortBy}&from=${startRow}&limit=${count}`)
         .then(response => response.json())
       // .then(json => console.log(json))
-      console.log(result)
+      result.data.forEach((el, i) => {
+        el.index = startRow + i + 1;
+      })
       return result
 
       // const data = filter
